@@ -51,6 +51,15 @@ struct NaiveVec4
 		return NaiveVec4(this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w);
 	}
 
+	NaiveVec4& operator+=(const NaiveVec4& other)
+	{
+		this->x += other.x;
+		this->y += other.y;
+		this->x += other.z;
+		this->w += other.w;
+		return *this;
+	}
+
 
 	// Since these operator functions are so short and constantly used,
 	// the function call cost is actually significant compared to the fuction body,
@@ -121,6 +130,8 @@ struct alignas(16) Vec4
 		*/
 		__m128 reg;
 	};
+
+	Vec4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f) : x(x), y(y), z(z), w(w) {}
 
 	Vec4& operator+=(const Vec4& other)
 	{
