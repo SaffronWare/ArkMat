@@ -1,0 +1,3 @@
+C:/SaffronWare/ArkMat/out/build/x64-debug/CMakeFiles/ArkMat.dir
+C:/SaffronWare/ArkMat/out/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/SaffronWare/ArkMat/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
