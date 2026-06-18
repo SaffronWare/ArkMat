@@ -48,12 +48,10 @@ int main()
 	start = std::chrono::high_resolution_clock::now();
 
 
-	for (int i = 0; i < 100000000 / 4; i++)
+	for (int i = 0; i < 100000000; i++)
 	{
 		c_ += a_ + b_;
-		c_ += a_ + b_;
-		c_ += a_ + b_;
-		c_ += a_ + b_;
+
 		
 	}
 
