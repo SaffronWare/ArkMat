@@ -259,3 +259,51 @@ struct alignas(16) Vec4
 
 };
 
+inline Vec4 vdot(const Vec4& v1, const Vec4& v2)
+{
+	Vec4 res;
+	res.reg = _mm_mul_ps(v1.reg, v2.reg); // This by default contains (xx)(yy)(zz)(ww)
+
+	/*_mm_shuffle_ps DOCS
+	*	Bassed on the parameters in _MM_SHUFFLE(),
+	*	{
+	*		Which index from 1st reg goes into first 32 bits,
+	*		which index from 1nd reg goes into second 32 bits,
+	*		which index from 2nd reg goes into third 32 bits,
+	*		which index from 2nd reg goes into fourth 32bits
+	*	}
+	*/
+	// now we have (yy)(xx)(ww)(zz)
+	__m128 shuffled = _mm_shuffle_ps(res.reg, res.reg, _MM_SHUFFLE(1, 0, 3, 2));
+	res.reg = _mm_add_ps(res.reg, shuffled); // (xx+yy)(yy+xx)(zz+ww)(ww+zz)
+	shuffled = _mm_shuffle_ps(res.reg, res.reg, _MM_SHUFFLE(2, 3, 0, 1)); // (zz+ww)(zz+ww)(xx+yy)(xx+yy)
+	res.reg = _mm_add_ps(res.reg, shuffled);
+	return res;
+}
+
+inline Vec4 vadot(const Vec4& v1, const Vec4& v2)
+{
+	Vec4 res;
+	res.reg = _mm_mul_ps(v1.reg, v2.reg);
+	// below gives x+y, z+w, x+y, z+w
+	res.reg = _mm_hadd_ps(res.reg, res.reg); // does x+y, z+w, x_other+y_other, z_other+w+other
+	res.reg = _mm_hadd_ps(res.reg, res.reg); // ends up with x+y+z+w, x+y+z+w,etc...
+	return res;
+}
+
+inline Vec4 vdotp(const Vec4& v1, const Vec4& v2)
+{
+	Vec4 res;
+	// CONROL MASK AND WHAT IT DOES. FIRST 4 BITS: WHAT TO MUTIPLY,
+	// Example 1111 says multiple x y z w by themselves and add them up (dot product)
+	// Example 1101 says multiply xyw by themsleves and add them up (dot product exlcudingz)
+	// Last 4 bits says where to write result: Example 1111 means write to all 4 channels
+	// Example 1000 says write only to x-channel
+	res.reg = _mm_dp_ps(v1.reg, v2.reg, 0xFF);
+	return res;
+}
+
+inline float cdot(const Vec4& v1, const Vec4& v2)
+{
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
+}

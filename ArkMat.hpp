@@ -3,7 +3,6 @@
 
 struct alignas(16) Vec4
 {
-
 	union
 	{
 		struct {
@@ -91,8 +90,42 @@ struct alignas(16) Vec4
 	{
 		return this->operator*(1.0f / other);
 	}
-
-
 };
+
+inline Vec4 vdot(const Vec4& v1, const Vec4& v2)
+{
+	Vec4 res;
+	res.reg = _mm_mul_ps(v1.reg, v2.reg); 
+
+	__m128 shuffled = _mm_shuffle_ps(res.reg, res.reg, _MM_SHUFFLE(1, 0, 3, 2));
+	res.reg = _mm_add_ps(res.reg, shuffled); 
+	shuffled = _mm_shuffle_ps(res.reg, res.reg, _MM_SHUFFLE(2, 3, 0, 1)); 
+	res.reg = _mm_add_ps(res.reg, shuffled);
+	return res;
+}
+
+inline Vec4 vadot(const Vec4& v1, const Vec4& v2)
+{
+	Vec4 res;
+	res.reg = _mm_mul_ps(v1.reg, v2.reg);
+
+	res.reg = _mm_hadd_ps(res.reg, res.reg); 
+	res.reg = _mm_hadd_ps(res.reg, res.reg);
+	return res;
+}
+
+inline Vec4 vdotp(const Vec4& v1, const Vec4& v2)
+{
+	Vec4 res;
+	res.reg = _mm_dp_ps(v1.reg, v2.reg, 0xFF);
+	return res;
+}
+
+inline float cdot(const Vec4& v1, const Vec4& v2)
+{
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
+}
+
+
 
 
