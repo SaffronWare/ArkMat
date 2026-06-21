@@ -5,7 +5,9 @@ project ("ArkMat")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable (ArkMat "testing.cpp" "Notes/ArkeeMatTest.hpp")
+add_executable (ArkMat "benchmark.cpp")
+
+target_include_directories(ArkMat PUBLIC "src")
 
 
 
