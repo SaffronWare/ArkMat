@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable (ArkMat "benchmark.cpp")
 
-target_include_directories(ArkMat PUBLIC "src")
+target_include_directories(ArkMat PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
 
 
