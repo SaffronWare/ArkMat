@@ -6,13 +6,15 @@ namespace ark
 {
 	struct Vec4;
 
-	inline Vec4 dot(const Vec4& v1, const Vec4& v2);
+	inline Vec4 rsqrt(Vec4 v);
 
-	inline float fdot(const Vec4& v1, const Vec4& v2);
+	inline Vec4 dot(Vec4 v1, Vec4 v2);
 
-	inline Vec4 sqrt(const Vec4& v);
+	inline float fdot(Vec4 v1, Vec4 v2);
 
-	inline float fsqrt(const Vec4& v);
+	inline Vec4 sqrt(Vec4 v);
+
+	inline float fsqrt(Vec4 v);
 
 	struct alignas(16) Vec4
 	{
@@ -25,11 +27,11 @@ namespace ark
 			__m128 reg;
 		};
 
-		Vec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
+		Vec4() : reg(_mm_setzero_ps()) {}
 
-		Vec4(float scalar) : x(scalar), y(scalar), z(scalar), w(scalar) {}
+		Vec4(float scalar) : reg(_mm_set1_ps(scalar)) {}
 
-		Vec4(float x, float y, float z = 0.0f, float w = 0.0f) : x(x), y(y), z(z), w(w) {}
+		Vec4(float x, float y, float z = 0.0f, float w = 0.0f) : reg(_mm_set_ps(w,z,y,x)) {}
 
 		Vec4 length_squared() const
 		{
@@ -53,16 +55,16 @@ namespace ark
 
 		Vec4& normalize()
 		{
-			*this /= length();
+			*this *= rsqrt(length_squared());
 			return *this;
 		}
 
-		Vec4 normalized()
+		Vec4 normalized () const
 		{
-			return *this / length();
+			return *this * rsqrt(length_squared());
 		}
 
-		Vec4 cross(const Vec4& other)
+		Vec4 cross(Vec4 other) const
 		{
 			Vec4 crossed;
 			__m128 vs1 = _mm_shuffle_ps(this->reg, this->reg, _MM_SHUFFLE(3, 0, 2, 1));
@@ -75,52 +77,52 @@ namespace ark
 			return crossed;
 		}
 
-		Vec4& operator+=(const Vec4& other)
+		Vec4& operator+=(Vec4 other)
 		{
 			reg = _mm_add_ps(reg, other.reg);
 			return *this;
 		}
 
-		Vec4 operator+(const Vec4& other) const
+		Vec4 operator+(Vec4 other) const
 		{
 			Vec4 res;
 			res.reg = _mm_add_ps(reg, other.reg);
 			return res;
 		}
 
-		Vec4& operator-=(const Vec4& other)
+		Vec4& operator-=(Vec4 other)
 		{
 			reg = _mm_sub_ps(reg, other.reg);
 			return *this;
 		}
 
-		Vec4 operator-(const Vec4& other) const
+		Vec4 operator-(Vec4 other) const
 		{
 			Vec4 res;
 			res.reg = _mm_sub_ps(reg, other.reg);
 			return res;
 		}
 
-		Vec4& operator*=(const Vec4& other)
+		Vec4& operator*=(Vec4 other)
 		{
 			reg = _mm_mul_ps(reg, other.reg);
 			return *this;
 		}
 
-		Vec4 operator*(const Vec4& other) const
+		Vec4 operator*(Vec4 other) const
 		{
 			Vec4 res;
 			res.reg = _mm_mul_ps(reg, other.reg);
 			return res;
 		}
 
-		Vec4& operator/=(const Vec4& other)
+		Vec4& operator/=(Vec4 other)
 		{
 			reg = _mm_div_ps(reg, other.reg);
 			return *this;
 		}
 
-		Vec4 operator/(const Vec4& other) const
+		Vec4 operator/(Vec4 other) const
 		{
 			Vec4 res;
 			res.reg = _mm_div_ps(reg, other.reg);
@@ -154,31 +156,37 @@ namespace ark
 
 	};
 
-	inline Vec4 dot(const Vec4& v1, const Vec4& v2)
+	inline Vec4 dot(Vec4 v1, Vec4 v2)
 	{
 		Vec4 res;
 		res.reg = _mm_dp_ps(v1.reg, v2.reg, 0xFF);
 		return res;
 	}
 
-	inline float fdot(const Vec4& v1, const Vec4& v2)
+	inline float fdot(Vec4 v1, Vec4 v2)
 	{
 		return dot(v1, v2).x;
 	}
 
-	inline Vec4 sqrt(const Vec4& v)
+	inline Vec4 sqrt(Vec4 v)
 	{
 		Vec4 res;
 		res.reg = _mm_sqrt_ps(v.reg);
 		return res;
 	}
 
-	inline float fsqrt(const Vec4& v)
+	inline float fsqrt(Vec4 v)
 	{
 		Vec4 res;
 		res.reg = _mm_sqrt_ps(v.reg);
 		return res.x;
 	}
 
+	inline Vec4 rsqrt(Vec4 v)
+	{
+		Vec4 res;
+		res.reg = _mm_rsqrt_ps(v.reg);
+		return res;
+	}
 	
 };

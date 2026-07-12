@@ -9,6 +9,6 @@ namespace ark
 
 	inline float smoothMin(float a, float b, float k)
 	{
-
+		
 	}
 };
