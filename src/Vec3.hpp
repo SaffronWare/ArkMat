@@ -8,9 +8,9 @@ namespace ark
 
 	inline Vec3 rsqrt(Vec3 v);
 
-	inline Vec3 dot(Vec4 v1, Vec4 v2);
+	inline Vec3 dot(Vec3 v1, Vec3 v2);
 
-	inline float fdot(Vec4 v1, Vec3 v2);
+	inline float fdot(Vec3 v1, Vec3 v2);
 
 	inline Vec3 sqrt(Vec3 v);
 
@@ -20,11 +20,10 @@ namespace ark
 	{
 		union
 		{
-		public:
 			struct {
 				float x, y, z;
 			};
-		private:
+
 			float data[3];
 			__m128 reg;
 		};
@@ -33,7 +32,7 @@ namespace ark
 
 		Vec3(float scalar) : reg(_mm_set1_ps(scalar)) {}
 
-		Vec3(float x, float y, float z = 0.0f, float w = 0.0f) : reg(_mm_set_ps(w, z, y, x)) {}
+		Vec3(float x, float y, float z = 0.0f) : reg(_mm_set_ps(0.0f, z, y, x)) {}
 
 		Vec3 length_squared() const
 		{
