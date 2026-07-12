@@ -68,6 +68,8 @@ namespace ark
 		Vec3 cross(Vec3 other) const
 		{
 			Vec3 crossed;
+			// note to self, shuffle says ok which element from vector 1 to put in last lane, then which from 1 in before last, then which from 2 in second, etc..
+
 			__m128 vs1 = _mm_shuffle_ps(this->reg, this->reg, _MM_SHUFFLE(3, 0, 2, 1));
 			__m128 us1 = _mm_shuffle_ps(other.reg, other.reg, _MM_SHUFFLE(3, 1, 0, 2));
 			__m128 r1 = _mm_mul_ps(vs1, us1);
