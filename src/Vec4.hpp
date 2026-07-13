@@ -64,18 +64,6 @@ namespace ark
 			return *this * rsqrt(length_squared());
 		}
 
-		Vec4 cross(Vec4 other) const
-		{
-			Vec4 crossed;
-			__m128 vs1 = _mm_shuffle_ps(this->reg, this->reg, _MM_SHUFFLE(3, 0, 2, 1));
-			__m128 us1 = _mm_shuffle_ps(other.reg, other.reg, _MM_SHUFFLE(3, 1, 0, 2));
-			__m128 r1 = _mm_mul_ps(vs1, us1);
-			__m128 vs2 = _mm_shuffle_ps(this->reg, this->reg, _MM_SHUFFLE(3, 1, 0, 2));
-			__m128 us2 = _mm_shuffle_ps(other.reg, other.reg, _MM_SHUFFLE(3, 0, 2, 1));
-			__m128 r2 = _mm_mul_ps(vs2, us2);
-			crossed.reg = _mm_sub_ps(r1, r2);
-			return crossed;
-		}
 
 		Vec4& operator+=(Vec4 other)
 		{
