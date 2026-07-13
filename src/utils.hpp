@@ -1,4 +1,5 @@
 #include "Vec4.hpp"
+#include <cstdlib>
 
 namespace ark
 {
@@ -13,8 +14,20 @@ namespace ark
 	}
 
 	template <typename T>
-	inline float blend(T a1, T a2, float t)
+	inline T blend(T a1, T a2, float t)
 	{
 		return a1 * (1.0f - t) + a2 * t;
 	}
+
+	float uniform(unsigned int seed = 0)
+	{
+		srand(seed);
+		return rand() / static_cast<float>(RAND_MAX);
+	}
+
+	float uniform(float min, float max, unsigned int seed)
+	{
+		return min + (max - min) * uniform(seed);
+	}
+
 };
