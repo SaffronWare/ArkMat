@@ -15,6 +15,13 @@ namespace ark
 		
 	}
 
+	inline Vec3 rotateY(Vec3 v, float t)
+	{
+		float c = std::cosf(t);
+		float s = std::sinf(t);
+		return Vec3(v.x * c - v.z * s, v.y, v.x * s + v.z * c);
+	}
+
 	template <typename T>
 	inline T blend(T a1, T a2, float t)
 	{
@@ -23,8 +30,20 @@ namespace ark
 
 	inline float uniform(unsigned int seed = 0)
 	{
-		srand(seed);
-		return rand() / static_cast<float>(RAND_MAX);
+		seed = (seed ^ 61) ^ (seed >> 16);
+		seed += (seed << 3);
+		seed ^= (seed >> 4);
+		seed *= 0x27d4eb2d;
+		seed ^= (seed >> 15);
+
+
+		unsigned int hx = seed * 1103515245U;
+
+
+		float x = (float)(hx & 0xFFFFFF) / 16777216.0f;
+
+
+		return x;
 	}
 
 	inline float uniform(float min, float max, unsigned int seed)
