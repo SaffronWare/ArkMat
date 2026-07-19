@@ -65,6 +65,22 @@ namespace ark
 
 			return mat;
 		}
+
+		__m128 operator*(__m128 other) const
+		{
+	
+			return _mm_setr_ps(_mm_dp_ps(mat.rows[0], other), _mm_dp_ps(mat.rows[1], other), _mm_dp_ps(mat.rows[2], other), _mm_dp_ps(mat.rows[3], other));
+		}
+
+		Vec4 operator*(Vec4 v) const
+		{
+			return Vec4(*this * v.reg);
+		}
+
+		Mat4 operator*(const Mat4& other) const
+		{
+			return 
+		}
 		
 	};
 

@@ -29,6 +29,8 @@ namespace ark
 
 		Vec4() : reg(_mm_setzero_ps()) {}
 
+		Vec4(__m128 _reg) : reg(_reg) {}
+
 		Vec4(float scalar) : reg(_mm_set1_ps(scalar)) {}
 
 		Vec4(float x, float y, float z = 0.0f, float w = 0.0f) : reg(_mm_set_ps(w,z,y,x)) {}
